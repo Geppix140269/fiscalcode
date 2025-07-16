@@ -69,7 +69,7 @@ const ItalianFiscalCodeAssistant = () => {
       section: 'QUADRO A - Sezione II',
       label: 'Request Type (Tipo richiesta)',
       page: 1,
-      position: { top: '30%', left: '10%', width: '15%', height: '15%' },
+      position: { top: '380px', left: '180px', width: '30px', height: '30px' },
       instruction: {
         en: 'Check box 1 - "ATTRIBUZIONE CODICE FISCALE" (Attribution of Fiscal Code) for your first fiscal code. This is the most common option for foreigners.',
         it: 'Spuntare la casella 1 - "ATTRIBUZIONE CODICE FISCALE" per il primo codice fiscale.',
@@ -576,40 +576,44 @@ const ItalianFiscalCodeAssistant = () => {
 
       <div className="flex h-[calc(100vh-60px)]">
         {/* PDF Viewer */}
-        <div className="flex-1 bg-gray-200 relative overflow-hidden">
+        <div className="flex-1 bg-gray-100 relative overflow-auto">
           {pdfUrl ? (
-            <div className="w-full h-full">
-              {/* Try iframe first */}
-              <iframe
-                src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
-                className="w-full h-full border-0"
-                title="Fiscal Code Form"
-              />
-              
-              {/* Fallback message */}
-              <div className="absolute inset-0 flex items-center justify-center bg-white/95 pointer-events-none opacity-0 hover:opacity-100 transition-opacity">
-                <div className="text-center p-8">
-                  <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <div className="w-full h-full flex items-center justify-center p-8">
+              <div className="bg-white rounded-xl shadow-lg p-8 max-w-2xl w-full">
+                <div className="text-center mb-6">
+                  <FileText className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">PDF Form Loaded</h3>
                   <p className="text-gray-600 mb-4">
-                    Having trouble viewing the PDF?
+                    Please open the PDF in a separate window to fill it out while following the instructions here.
                   </p>
-                  <div className="space-y-3 pointer-events-auto">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      Open PDF in New Tab
-                    </a>
-                    <a
-                      href={pdfUrl}
-                      download="AA4-8-fiscal-code-form.pdf"
-                      className="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                      Download PDF
-                    </a>
-                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-3 w-full bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                  >
+                    <FileText className="w-5 h-5" />
+                    Open PDF Form in New Tab
+                  </a>
+                  
+                  <a
+                    href={pdfUrl}
+                    download="AA4-8-fiscal-code-form.pdf"
+                    className="flex items-center justify-center gap-3 w-full bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download PDF Form
+                  </a>
+                </div>
+                
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Tip:</strong> Keep the PDF open in another tab or print it out. 
+                    Follow the instructions on the right for each field as you fill out the form.
+                  </p>
                 </div>
               </div>
             </div>
@@ -617,27 +621,12 @@ const ItalianFiscalCodeAssistant = () => {
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-500">
                 <FileText className="w-16 h-16 mx-auto mb-4 text-gray-400" />
-                <p>PDF will be displayed here</p>
+                <p>Upload or download the PDF form to begin</p>
               </div>
             </div>
           )}
           
-          {/* Field Highlight Overlay */}
-          {currentFieldData && (
-            <div
-              className="absolute border-4 border-red-500 rounded-lg pointer-events-none animate-pulse"
-              style={{
-                top: currentFieldData.position.top,
-                left: currentFieldData.position.left,
-                width: currentFieldData.position.width,
-                height: currentFieldData.position.height,
-              }}
-            >
-              <div className="absolute -top-8 left-0 bg-red-500 text-white px-3 py-1 rounded-t-lg text-sm font-bold">
-                Fill this field
-              </div>
-            </div>
-          )}
+          {/* Removed Field Highlight Overlay since PDF is not embedded */}
         </div>
 
         {/* Instructions Panel */}
