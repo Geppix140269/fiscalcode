@@ -1,4 +1,4 @@
-// 1. package.json (root level)
+// package.json (root level)
 
 {
   "name": "italian-fiscal-code-service",
