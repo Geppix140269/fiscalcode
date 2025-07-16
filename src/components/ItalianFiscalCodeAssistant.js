@@ -575,7 +575,7 @@ const ItalianFiscalCodeAssistant = () => {
         <div className="absolute inset-0 w-full h-full">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-800 via-indigo-700 to-teal-700"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 via-transparent to-teal-900/50"></div>
-          <div className="absolute inset-0 bg-black/30"></div>
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
         <div className="absolute inset-0">
@@ -591,8 +591,8 @@ const ItalianFiscalCodeAssistant = () => {
                   <FileText className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <div className="text-white font-bold text-lg">Fiscal Code Assistant</div>
-                  <div className="text-purple-200 text-sm">{t('subtitle')}</div>
+                  <div className="text-white font-bold text-lg">Italian Fiscal Code</div>
+                  <div className="text-purple-200 text-sm">PDF Assistant Service</div>
                 </div>
               </div>
               
@@ -613,24 +613,55 @@ const ItalianFiscalCodeAssistant = () => {
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold mb-8 shadow-xl">
-            <Sparkles className="w-4 h-4" />
-            <span>MULTILINGUAL PDF FORM ASSISTANT</span>
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+            PROFESSIONAL ITALIAN BUREAUCRACY SERVICE
           </div>
           
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-8 leading-tight">
-            {t('heroTitle').split(' ').slice(0, 4).join(' ')}<br />
+            Get Your Italian<br />
             <span className="font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
-              {t('heroTitle').split(' ').slice(4).join(' ')}
+              Codice Fiscale
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
-            {t('heroSubtitle')}
-          </p>
+          <div className="max-w-4xl mx-auto mb-10">
+            <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-2xl">
+              <p className="text-xl md:text-2xl text-white font-medium mb-3">
+                We guide you through every field in your preferred language
+              </p>
+              <p className="text-lg md:text-xl text-white/90 font-light">
+                Professional assistance, multilingual support, and expert guidance—all in one place
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-white font-medium hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+              <div className="flex items-center gap-3">
+                <Languages className="w-5 h-5 text-emerald-300" />
+                <span>✓ 8 Languages</span>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-white font-medium hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+              <div className="flex items-center gap-3">
+                <FileCheck className="w-5 h-5 text-blue-300" />
+                <span>✓ Official Form</span>
+              </div>
+            </div>
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-white font-medium hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-yellow-300" />
+                <span>✓ Expert Guidance</span>
+              </div>
+            </div>
+          </div>
 
           <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 max-w-3xl mx-auto mb-12 shadow-2xl">
-            <h2 className="text-2xl font-bold text-white mb-6">{t('downloadFirst')}</h2>
-            <p className="text-white/80 mb-8">{t('downloadDesc')}</p>
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Download className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-4">Step 1: Download the Official Form</h2>
+            <p className="text-white/80 mb-8">Download the official Italian fiscal code application form (AA4/8) to get started</p>
             
             <a
               href="/AA4-8-fiscal-code-form.pdf"
@@ -638,19 +669,29 @@ const ItalianFiscalCodeAssistant = () => {
               className="inline-flex items-center gap-3 bg-white/90 backdrop-blur-md text-purple-700 px-8 py-4 rounded-full font-bold hover:bg-white hover:shadow-2xl transition-all duration-300"
             >
               <Download className="w-5 h-5" />
-              <span>{t('downloadButton')}</span>
+              <span>Download Official Form AA4/8</span>
             </a>
             
-            <p className="text-white/60 text-sm mt-4">PDF • Official Form AA4/8 • 2 pages</p>
+            <p className="text-white/60 text-sm mt-4">PDF • 2 pages • Italian Revenue Agency</p>
           </div>
 
           <button
             onClick={() => setShowWelcome(false)}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-10 py-5 rounded-full font-bold hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-lg"
+            className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-10 py-5 rounded-full font-bold hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-lg"
           >
-            <span>{t('startButton')}</span>
-            <ArrowRight className="w-5 h-5" />
+            Start Guided Form Filling
           </button>
+          
+          <div className="mt-16 bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6 inline-block shadow-xl">
+            <p className="text-white font-medium text-lg mb-3">Questions? We're here to help.</p>
+            <div className="flex flex-wrap justify-center items-center gap-6 text-white">
+              <a href="mailto:info@fiscalcode.service" className="hover:text-emerald-300 transition-colors font-medium">
+                ✉️ info@fiscalcode.service
+              </a>
+              <span className="text-white/30">•</span>
+              <span className="font-medium">Professional Support Available</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -724,26 +765,27 @@ const ItalianFiscalCodeAssistant = () => {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">{t('fieldGuide')}</h1>
-                <p className="text-gray-600 text-sm">Step {currentField + 1} of {allFields.length}</p>
+                <h1 className="text-xl font-bold text-gray-800">Italian Fiscal Code</h1>
+                <p className="text-gray-600 text-sm">Field-by-Field Assistant</p>
               </div>
             </div>
             
             <div className="flex items-center gap-4">
-              <div className="text-sm font-medium text-gray-600">
-                Progress: {Math.round(progress)}%
-              </div>
-              <div className="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full transition-all duration-700"
-                  style={{ width: `${progress}%` }}
-                ></div>
+              <div className="hidden md:flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Progress:</span>
+                <div className="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full transition-all duration-700"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+                <span className="text-sm font-bold text-purple-600">{Math.round(progress)}%</span>
               </div>
               
               <select
                 value={currentLanguage}
                 onChange={(e) => setCurrentLanguage(e.target.value)}
-                className="bg-white/70 border border-gray-200 text-gray-700 px-3 py-1.5 rounded-lg text-sm"
+                className="bg-white/70 backdrop-blur-sm border border-gray-200 text-gray-700 px-4 py-2 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm"
               >
                 {Object.entries(languages).map(([code, lang]) => (
                   <option key={code} value={code}>
@@ -756,86 +798,28 @@ const ItalianFiscalCodeAssistant = () => {
         </div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-              <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <Edit3 className="w-6 h-6" />
-                  {t('currentField')}: {currentFieldData?.label}
-                </h2>
-                <p className="text-purple-100 mt-2">
-                  {formFields.find(s => s.fields.includes(currentFieldData))?.section}
-                </p>
-              </div>
-
-              <div className="p-8">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6 mb-6">
-                  <div className="flex items-start gap-3">
-                    <HelpCircle className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <h3 className="font-bold text-blue-900 mb-2">{t('whatToWrite')}:</h3>
-                      <p className="text-blue-800 text-lg leading-relaxed">
-                        {currentFieldData?.instruction[currentLanguage] || currentFieldData?.instruction.en}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-6 mb-6">
-                  <h3 className="font-bold text-emerald-900 mb-2">{t('example')}:</h3>
-                  <p className="text-emerald-700 font-mono text-lg">{currentFieldData?.example}</p>
-                </div>
-
-                {currentFieldData?.highlight && (
-                  <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-xl p-4">
-                    <div className="flex items-start gap-2">
-                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
-                      <p className="text-amber-800 font-medium">{currentFieldData.highlight}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
-                  <button
-                    onClick={() => setCurrentField(Math.max(0, currentField - 1))}
-                    disabled={currentField === 0}
-                    className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight className="w-5 h-5 rotate-180" />
-                    <span>{t('prevField')}</span>
-                  </button>
-                  
-                  {currentField === allFields.length - 1 ? (
-                    <button
-                      onClick={() => setFormCompleted(true)}
-                      className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:shadow-lg transition-all font-semibold"
-                    >
-                      <Check className="w-5 h-5" />
-                      <span>{t('completeForm')}</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setCurrentField(Math.min(allFields.length - 1, currentField + 1))}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all"
-                    >
-                      <span>{t('nextField')}</span>
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
+        <div className="grid lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
-            <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl p-6 sticky top-24 border border-white/20">
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl p-6 sticky top-24 border border-white/20">
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-sm font-medium text-gray-600">Form Progress</span>
+                  <span className="text-sm font-bold text-purple-600">{Math.round(progress)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 h-3 rounded-full transition-all duration-700 ease-out"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+
               <h3 className="font-bold text-gray-800 mb-4">Field Navigation</h3>
-              <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+              <div className="space-y-2 max-h-[50vh] overflow-y-auto">
                 {formFields.map((section, sectionIndex) => (
                   <div key={sectionIndex} className="mb-4">
-                    <h4 className="text-sm font-semibold text-gray-600 mb-2">{section.section}</h4>
+                    <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">{section.section}</h4>
                     <div className="space-y-1">
                       {section.fields.map((field, fieldIndex) => {
                         const globalIndex = formFields
@@ -847,9 +831,9 @@ const ItalianFiscalCodeAssistant = () => {
                           <button
                             key={field.id}
                             onClick={() => setCurrentField(globalIndex)}
-                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                            className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all ${
                               isActive 
-                                ? 'bg-purple-100 text-purple-700 font-medium' 
+                                ? 'bg-gradient-to-r from-purple-100 to-indigo-100 text-purple-700 font-medium shadow-sm' 
                                 : 'hover:bg-gray-100 text-gray-600'
                             }`}
                           >
@@ -860,6 +844,83 @@ const ItalianFiscalCodeAssistant = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-3">
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden">
+              <div className={`bg-gradient-to-r from-purple-600 to-indigo-600 p-8`}>
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <Edit3 className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">
+                      {currentFieldData?.label}
+                    </h2>
+                    <p className="text-white/80">
+                      {formFields.find(s => s.fields.includes(currentFieldData))?.section} • Field {currentField + 1} of {allFields.length}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-6">
+                  <div className="flex items-start gap-3">
+                    <HelpCircle className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-bold text-blue-900 mb-2">Instructions:</h3>
+                      <p className="text-blue-800 text-lg leading-relaxed">
+                        {currentFieldData?.instruction[currentLanguage] || currentFieldData?.instruction.en}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-6 mb-6">
+                  <h3 className="font-bold text-emerald-900 mb-2">Example:</h3>
+                  <p className="text-emerald-700 font-mono text-lg bg-white/50 px-4 py-2 rounded-xl inline-block">{currentFieldData?.example}</p>
+                </div>
+
+                {currentFieldData?.highlight && (
+                  <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-5">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                      <p className="text-amber-800 font-medium">{currentFieldData.highlight}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center mt-10 pt-8 border-t border-gray-200">
+                  <button
+                    onClick={() => setCurrentField(Math.max(0, currentField - 1))}
+                    disabled={currentField === 0}
+                    className="flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                  >
+                    <ChevronRight className="w-5 h-5 rotate-180" />
+                    <span>Previous Field</span>
+                  </button>
+                  
+                  {currentField === allFields.length - 1 ? (
+                    <button
+                      onClick={() => setFormCompleted(true)}
+                      className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl hover:shadow-lg transition-all font-semibold transform hover:scale-105"
+                    >
+                      <Check className="w-5 h-5" />
+                      <span>Complete Form</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setCurrentField(Math.min(allFields.length - 1, currentField + 1))}
+                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all font-medium"
+                    >
+                      <span>Next Field</span>
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
