@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Download, Check, AlertCircle, Globe, CreditCard, FileText, User, MapPin, Calendar, Hash, Shield, Award, Clock, Star, ArrowRight, Sparkles, Zap, Brain } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { jsPDF } from 'jspdf';
+import emailjs from '@emailjs/browser';
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_stripe_key_here');
@@ -17,6 +18,12 @@ const ItalianTaxFormService = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
+  const [applicationId, setApplicationId] = useState('');
+
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init(process.env.REACT_APP_EMAILJS_PUBLIC_KEY || 'wKn1_xMCtZssdZzpb');
+  }, []);
 
   const languages = {
     en: { name: 'English', flag: '🇬🇧' },
@@ -133,6 +140,13 @@ const ItalianTaxFormService = () => {
           label: 'Given Name(s)',
           required: true,
           instruction: t.firstNameInstr
+        },
+        {
+          name: 'email',
+          type: 'email',
+          label: 'Email Address',
+          required: true,
+          instruction: 'Enter your email address for confirmation and updates'
         },
         {
           name: 'gender',
@@ -269,38 +283,20 @@ const ItalianTaxFormService = () => {
     setIsLoading(true);
     setPaymentError(null);
 
-    try {
-      // Create payment intent on your backend
-      const response = await fetch('/api/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: 7500, // €75.00 in cents
-          currency: 'eur',
-          customer_data: {
-            name: `${formData.firstName} ${formData.lastName}`,
-            email: formData.email,
-          },
-          application_data: formData
-        }),
-      });
+    // Generate unique application ID
+    const newApplicationId = `FC-${Date.now()}`;
+    setApplicationId(newApplicationId);
 
-      const { client_secret } = await response.json();
-      
-      const stripe = await stripePromise;
-      
-      // For demo purposes, we'll simulate successful payment
-      // In production, you'd use stripe.confirmCardPayment()
-      setTimeout(() => {
+    try {
+      // For now, simulate payment (you can add real Stripe later)
+      setTimeout(async () => {
+        // Send confirmation emails
+        await sendConfirmationEmail(newApplicationId);
+        await sendAgencyNotification(newApplicationId);
+        
         setIsCompleted(true);
         setShowPayment(false);
         setIsLoading(false);
-        
-        // Send confirmation email and process application
-        sendConfirmationEmail();
-        processApplication();
       }, 2000);
 
     } catch (error) {
@@ -309,43 +305,81 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  // Send confirmation email
-  const sendConfirmationEmail = async () => {
+  // Send confirmation email to user
+  const sendConfirmationEmail = async (appId) => {
     try {
-      await fetch('/api/send-confirmation', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          name: `${formData.firstName} ${formData.lastName}`,
-          language: currentLanguage,
-          application_id: `FC-${Date.now()}`
-        }),
-      });
+      const templateParams = {
+        to_email: formData.email,
+        to_name: `${formData.firstName} ${formData.lastName}`,
+        application_id: appId,
+        service_type: getServiceTypeName(formData.requestType),
+        full_name: `${formData.firstName} ${formData.lastName}`,
+        birth_date: formData.birthDate,
+        birth_place: formData.birthPlace,
+        current_address: `${formData.address} ${formData.civicNumber}, ${formData.city}`,
+        email: formData.email,
+        submission_date: new Date().toLocaleDateString(),
+        processing_time: '5-7 business days',
+        from_name: 'Italian Fiscal Code Service',
+        reply_to: 'info@fiscalcode.service'
+      };
+
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_w6tghqr',
+        process.env.REACT_APP_EMAILJS_FISCAL_USER_TEMPLATE_ID || 'template_j0xsdcl',
+        templateParams
+      );
+
+      console.log('User confirmation email sent successfully');
     } catch (error) {
-      console.error('Error sending confirmation email:', error);
+      console.error('Error sending user confirmation email:', error);
     }
   };
 
-  // Process application with Italian authorities
-  const processApplication = async () => {
+  // Send notification to agency
+  const sendAgencyNotification = async (appId) => {
     try {
-      await fetch('/api/process-application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          application_data: formData,
-          payment_status: 'completed',
-          submission_date: new Date().toISOString()
-        }),
-      });
+      const templateParams = {
+        application_id: appId,
+        client_name: `${formData.firstName} ${formData.lastName}`,
+        client_email: formData.email,
+        service_type: getServiceTypeName(formData.requestType),
+        birth_date: formData.birthDate,
+        birth_place: `${formData.birthPlace}, ${formData.birthProvince}`,
+        current_address: `${formData.address} ${formData.civicNumber}, ${formData.city} ${formData.postalCode}, ${formData.province}`,
+        foreign_address: formData.foreignCountry ? `${formData.foreignAddress}, ${formData.foreignCountry}` : 'N/A',
+        gender: formData.gender,
+        submission_date: new Date().toLocaleDateString(),
+        submission_time: new Date().toLocaleTimeString(),
+        language: currentLanguage.toUpperCase(),
+        payment_amount: '€75.00',
+        payment_status: 'Completed',
+        to_email: 'info@fiscalcode.service',
+        from_name: 'Italian Fiscal Code Service System'
+      };
+
+      await emailjs.send(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID || 'service_w6tghqr',
+        process.env.REACT_APP_EMAILJS_FISCAL_AGENCY_TEMPLATE_ID || 'template_pkjko4e',
+        templateParams
+      );
+
+      console.log('Agency notification email sent successfully');
     } catch (error) {
-      console.error('Error processing application:', error);
+      console.error('Error sending agency notification email:', error);
     }
+  };
+
+  // Get service type name
+  const getServiceTypeName = (typeId) => {
+    const serviceTypes = {
+      '1': 'New Fiscal Code Application',
+      '2': 'Data Variation Request',
+      '3': 'Death Communication',
+      '4': 'Certificate Request',
+      '5': 'Duplicate Card Request'
+    };
+    return serviceTypes[typeId] || 'Unknown Service';
   };
 
   // Enhanced PDF Generation with Official Italian Form Format
@@ -365,27 +399,31 @@ const ItalianTaxFormService = () => {
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     
+    // Application ID
+    doc.text(`Application ID: ${applicationId}`, 20, 65);
+    
     // Personal Information Section
-    doc.text('QUADRO B - Dati anagrafici', 20, 70);
-    doc.text(`Cognome: ${formData.lastName || ''}`, 20, 85);
-    doc.text(`Nome: ${formData.firstName || ''}`, 20, 95);
-    doc.text(`Sesso: ${formData.gender || ''}`, 20, 105);
-    doc.text(`Data di Nascita: ${formData.birthDate || ''}`, 120, 105);
-    doc.text(`Comune di Nascita: ${formData.birthPlace || ''}`, 20, 115);
-    doc.text(`Provincia: ${formData.birthProvince || ''}`, 120, 115);
+    doc.text('QUADRO B - Dati anagrafici', 20, 80);
+    doc.text(`Cognome: ${formData.lastName || ''}`, 20, 95);
+    doc.text(`Nome: ${formData.firstName || ''}`, 20, 105);
+    doc.text(`Sesso: ${formData.gender || ''}`, 20, 115);
+    doc.text(`Data di Nascita: ${formData.birthDate || ''}`, 120, 115);
+    doc.text(`Comune di Nascita: ${formData.birthPlace || ''}`, 20, 125);
+    doc.text(`Provincia: ${formData.birthProvince || ''}`, 120, 125);
+    doc.text(`Email: ${formData.email || ''}`, 20, 135);
     
     // Residence Section
-    doc.text('QUADRO C - Residenza anagrafica/domicilio fiscale', 20, 135);
-    doc.text(`Indirizzo: ${formData.address || ''} ${formData.civicNumber || ''}`, 20, 150);
-    doc.text(`Comune: ${formData.city || ''}`, 20, 160);
-    doc.text(`CAP: ${formData.postalCode || ''}`, 120, 160);
-    doc.text(`Provincia: ${formData.province || ''}`, 20, 170);
+    doc.text('QUADRO C - Residenza anagrafica/domicilio fiscale', 20, 155);
+    doc.text(`Indirizzo: ${formData.address || ''} ${formData.civicNumber || ''}`, 20, 170);
+    doc.text(`Comune: ${formData.city || ''}`, 20, 180);
+    doc.text(`CAP: ${formData.postalCode || ''}`, 120, 180);
+    doc.text(`Provincia: ${formData.province || ''}`, 20, 190);
     
     // Foreign Residence (if applicable)
     if (formData.foreignCountry) {
-      doc.text('QUADRO D - Residenza estera', 20, 190);
-      doc.text(`Stato estero: ${formData.foreignCountry || ''}`, 20, 205);
-      doc.text(`Indirizzo: ${formData.foreignAddress || ''}`, 20, 215);
+      doc.text('QUADRO D - Residenza estera', 20, 210);
+      doc.text(`Stato estero: ${formData.foreignCountry || ''}`, 20, 225);
+      doc.text(`Indirizzo: ${formData.foreignAddress || ''}`, 20, 235);
     }
     
     // Request Type
@@ -397,17 +435,16 @@ const ItalianTaxFormService = () => {
       '5': 'Richiesta Duplicato Tesserino'
     };
     
-    doc.text('QUADRO A - Tipo richiesta', 20, 235);
-    doc.text(`Servizio richiesto: ${requestTypes[formData.requestType] || ''}`, 20, 250);
+    doc.text('QUADRO A - Tipo richiesta', 20, 255);
+    doc.text(`Servizio richiesto: ${requestTypes[formData.requestType] || ''}`, 20, 270);
     
     // Footer
     doc.setFontSize(10);
-    doc.text('Applicazione processata tramite servizio professionale', 20, 270);
-    doc.text(`Data di generazione: ${new Date().toLocaleDateString('it-IT')}`, 20, 280);
-    doc.text('Questo documento verrà inviato all\'Agenzia delle Entrate italiana', 20, 290);
+    doc.text('Applicazione processata tramite servizio professionale', 20, 285);
+    doc.text(`Data di generazione: ${new Date().toLocaleDateString('it-IT')}`, 20, 295);
     
     // Save the PDF
-    const fileName = `codice-fiscale-${formData.lastName || 'application'}-${Date.now()}.pdf`;
+    const fileName = `codice-fiscale-${formData.lastName || 'application'}-${applicationId}.pdf`;
     doc.save(fileName);
     
     // Track download
@@ -416,11 +453,12 @@ const ItalianTaxFormService = () => {
 
   // Track PDF downloads for analytics
   const trackPDFDownload = (fileName) => {
-    // Google Analytics or other tracking
+    // Google Analytics tracking
     if (typeof gtag !== 'undefined') {
       gtag('event', 'pdf_download', {
         event_category: 'engagement',
-        event_label: fileName
+        event_label: fileName,
+        application_id: applicationId
       });
     }
   };
@@ -598,7 +636,7 @@ const ItalianTaxFormService = () => {
             </div>
             
             <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-              Payment Successful & Application Submitted!
+              Application Successfully Submitted!
             </h1>
             
             <p className="text-xl text-gray-700 mb-8 leading-relaxed">
@@ -610,12 +648,12 @@ const ItalianTaxFormService = () => {
               <div className="flex items-center justify-center space-x-8 text-sm">
                 <div className="flex flex-col items-center space-y-2">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full shadow-lg"></div>
-                  <span className="text-emerald-700 font-semibold">Payment Received</span>
+                  <span className="text-emerald-700 font-semibold">Application Received</span>
                 </div>
                 <div className="w-16 h-px bg-gradient-to-r from-emerald-400 to-teal-400"></div>
                 <div className="flex flex-col items-center space-y-2">
                   <div className="w-3 h-3 bg-teal-500 rounded-full animate-pulse shadow-lg"></div>
-                  <span className="text-teal-700 font-semibold">Processing Started</span>
+                  <span className="text-teal-700 font-semibold">Email Sent</span>
                 </div>
                 <div className="w-16 h-px bg-gradient-to-r from-teal-400/30 to-gray-400/30"></div>
                 <div className="flex flex-col items-center space-y-2">
@@ -634,7 +672,7 @@ const ItalianTaxFormService = () => {
             </button>
             
             <p className="text-sm text-gray-500 mt-4">
-              Application ID: FC-{Date.now()} • Confirmation email sent
+              Application ID: {applicationId} • Confirmation email sent to {formData.email}
             </p>
           </div>
         </div>
@@ -673,6 +711,10 @@ const ItalianTaxFormService = () => {
                       <span className="font-semibold">{formData.firstName} {formData.lastName}</span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-gray-600">Email:</span>
+                      <span className="font-semibold">{formData.email}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-gray-600">Birth Date:</span>
                       <span className="font-semibold">{formData.birthDate}</span>
                     </div>
@@ -692,7 +734,7 @@ const ItalianTaxFormService = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Service Type:</span>
-                      <span className="font-semibold">Professional Processing</span>
+                      <span className="font-semibold">{getServiceTypeName(formData.requestType)}</span>
                     </div>
                   </div>
                 </div>
@@ -728,7 +770,7 @@ const ItalianTaxFormService = () => {
                 {isLoading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Processing Payment...</span>
+                    <span>Processing Application...</span>
                   </>
                 ) : (
                   <>
@@ -739,7 +781,7 @@ const ItalianTaxFormService = () => {
               </button>
 
               <p className="text-center text-gray-500 text-sm mt-4">
-                Secure payment processing • SSL encrypted • GDPR compliant • Powered by Stripe
+                Secure processing • Email confirmations • GDPR compliant • Professional service
               </p>
             </div>
           </div>
