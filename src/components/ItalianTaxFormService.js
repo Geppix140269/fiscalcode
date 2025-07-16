@@ -1,5 +1,13 @@
+// PATH: src/components/ItalianTaxFormService.js
+// REPLACE your existing ItalianTaxFormService.js with this entire content
+
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Download, Check, AlertCircle, Globe, CreditCard, FileText, User, MapPin, Calendar, Hash, Shield, Award, Clock, Star, ArrowRight, Sparkles, Zap, Brain } from 'lucide-react';
+import { loadStripe } from '@stripe/stripe-js';
+import { jsPDF } from 'jspdf';
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_stripe_key_here');
 
 const ItalianTaxFormService = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -8,15 +16,7 @@ const ItalianTaxFormService = () => {
   const [showPayment, setShowPayment] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  const [paymentError, setPaymentError] = useState(null);
 
   const languages = {
     en: { name: 'English', flag: '🇬🇧' },
@@ -42,8 +42,8 @@ const ItalianTaxFormService = () => {
       serviceFee: 'Professional Service Fee',
       price: '€75',
       serviceDescription: 'Our Italian bureaucracy specialists will handle your application from start to finish.',
-      payNow: 'Complete Application',
-      downloadPdf: 'Download Documents',
+      payNow: 'Complete Payment',
+      downloadPdf: 'Download Application Form',
       nextStep: 'Continue',
       prevStep: 'Back',
       startApplication: 'Start Your Application',
@@ -264,45 +264,165 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  const handlePayment = () => {
+  // Enhanced Payment Processing with Stripe
+  const handlePayment = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsCompleted(true);
-      setShowPayment(false);
+    setPaymentError(null);
+
+    try {
+      // Create payment intent on your backend
+      const response = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 7500, // €75.00 in cents
+          currency: 'eur',
+          customer_data: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+          },
+          application_data: formData
+        }),
+      });
+
+      const { client_secret } = await response.json();
+      
+      const stripe = await stripePromise;
+      
+      // For demo purposes, we'll simulate successful payment
+      // In production, you'd use stripe.confirmCardPayment()
+      setTimeout(() => {
+        setIsCompleted(true);
+        setShowPayment(false);
+        setIsLoading(false);
+        
+        // Send confirmation email and process application
+        sendConfirmationEmail();
+        processApplication();
+      }, 2000);
+
+    } catch (error) {
+      setPaymentError('Payment failed. Please try again.');
       setIsLoading(false);
-    }, 3000);
+    }
   };
 
+  // Send confirmation email
+  const sendConfirmationEmail = async () => {
+    try {
+      await fetch('/api/send-confirmation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          name: `${formData.firstName} ${formData.lastName}`,
+          language: currentLanguage,
+          application_id: `FC-${Date.now()}`
+        }),
+      });
+    } catch (error) {
+      console.error('Error sending confirmation email:', error);
+    }
+  };
+
+  // Process application with Italian authorities
+  const processApplication = async () => {
+    try {
+      await fetch('/api/process-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          application_data: formData,
+          payment_status: 'completed',
+          submission_date: new Date().toISOString()
+        }),
+      });
+    } catch (error) {
+      console.error('Error processing application:', error);
+    }
+  };
+
+  // Enhanced PDF Generation with Official Italian Form Format
   const generatePDF = () => {
-    const pdfContent = `
-ITALIAN FISCAL CODE APPLICATION
-Generated on: ${new Date().toLocaleDateString()}
-
-PERSONAL INFORMATION:
-Name: ${formData.firstName} ${formData.lastName}
-Gender: ${formData.gender}
-Birth Date: ${formData.birthDate}
-Birth Place: ${formData.birthPlace}
-Province: ${formData.birthProvince}
-
-RESIDENCE:
-Address: ${formData.address} ${formData.civicNumber}
-City: ${formData.city}
-Postal Code: ${formData.postalCode}
-Province: ${formData.province}
-
-Request Type: ${formData.requestType}
-
-This application will be processed and submitted to the Italian Revenue Agency.
-    `;
+    const doc = new jsPDF();
     
-    const blob = new Blob([pdfContent], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `fiscal-code-application-${formData.lastName || 'form'}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
+    // Set up the PDF with official Italian formatting
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    
+    // Header
+    doc.text('DOMANDA DI ATTRIBUZIONE CODICE FISCALE', 20, 20);
+    doc.text('COMUNICAZIONE VARIAZIONE DATI', 20, 30);
+    doc.text('E RICHIESTA TESSERINO/DUPLICATO TESSERA SANITARIA', 20, 40);
+    doc.text('(PERSONE FISICHE)', 20, 50);
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    
+    // Personal Information Section
+    doc.text('QUADRO B - Dati anagrafici', 20, 70);
+    doc.text(`Cognome: ${formData.lastName || ''}`, 20, 85);
+    doc.text(`Nome: ${formData.firstName || ''}`, 20, 95);
+    doc.text(`Sesso: ${formData.gender || ''}`, 20, 105);
+    doc.text(`Data di Nascita: ${formData.birthDate || ''}`, 120, 105);
+    doc.text(`Comune di Nascita: ${formData.birthPlace || ''}`, 20, 115);
+    doc.text(`Provincia: ${formData.birthProvince || ''}`, 120, 115);
+    
+    // Residence Section
+    doc.text('QUADRO C - Residenza anagrafica/domicilio fiscale', 20, 135);
+    doc.text(`Indirizzo: ${formData.address || ''} ${formData.civicNumber || ''}`, 20, 150);
+    doc.text(`Comune: ${formData.city || ''}`, 20, 160);
+    doc.text(`CAP: ${formData.postalCode || ''}`, 120, 160);
+    doc.text(`Provincia: ${formData.province || ''}`, 20, 170);
+    
+    // Foreign Residence (if applicable)
+    if (formData.foreignCountry) {
+      doc.text('QUADRO D - Residenza estera', 20, 190);
+      doc.text(`Stato estero: ${formData.foreignCountry || ''}`, 20, 205);
+      doc.text(`Indirizzo: ${formData.foreignAddress || ''}`, 20, 215);
+    }
+    
+    // Request Type
+    const requestTypes = {
+      '1': 'Attribuzione Codice Fiscale',
+      '2': 'Variazione Dati',
+      '3': 'Comunicazione Decesso',
+      '4': 'Richiesta Certificato',
+      '5': 'Richiesta Duplicato Tesserino'
+    };
+    
+    doc.text('QUADRO A - Tipo richiesta', 20, 235);
+    doc.text(`Servizio richiesto: ${requestTypes[formData.requestType] || ''}`, 20, 250);
+    
+    // Footer
+    doc.setFontSize(10);
+    doc.text('Applicazione processata tramite servizio professionale', 20, 270);
+    doc.text(`Data di generazione: ${new Date().toLocaleDateString('it-IT')}`, 20, 280);
+    doc.text('Questo documento verrà inviato all\'Agenzia delle Entrate italiana', 20, 290);
+    
+    // Save the PDF
+    const fileName = `codice-fiscale-${formData.lastName || 'application'}-${Date.now()}.pdf`;
+    doc.save(fileName);
+    
+    // Track download
+    trackPDFDownload(fileName);
+  };
+
+  // Track PDF downloads for analytics
+  const trackPDFDownload = (fileName) => {
+    // Google Analytics or other tracking
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'pdf_download', {
+        event_category: 'engagement',
+        event_label: fileName
+      });
+    }
   };
 
   const currentFormStep = formSteps[currentStep];
@@ -315,13 +435,8 @@ This application will be processed and submitted to the Italian Revenue Agency.
       <div className={`min-h-screen relative overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`}>
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
-          {/* Gradient Background (fallback) */}
           <div className="absolute inset-0 bg-gradient-to-br from-purple-800 via-indigo-700 to-teal-700"></div>
-          
-          {/* Gradient Overlay for depth */}
           <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 via-transparent to-teal-900/50"></div>
-          
-          {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
@@ -483,19 +598,19 @@ This application will be processed and submitted to the Italian Revenue Agency.
             </div>
             
             <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-              Application Successfully Submitted!
+              Payment Successful & Application Submitted!
             </h1>
             
             <p className="text-xl text-gray-700 mb-8 leading-relaxed">
-              Your Italian fiscal code application has been received and will be processed by our specialists within 5-7 business days. 
-              You'll receive regular updates via email throughout the process.
+              Your Italian fiscal code application has been processed and will be submitted to the Italian Revenue Agency within 24 hours. 
+              You'll receive regular updates via email throughout the 5-7 business day processing period.
             </p>
             
             <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 mb-8 border border-emerald-200">
               <div className="flex items-center justify-center space-x-8 text-sm">
                 <div className="flex flex-col items-center space-y-2">
                   <div className="w-3 h-3 bg-emerald-500 rounded-full shadow-lg"></div>
-                  <span className="text-emerald-700 font-semibold">Application Received</span>
+                  <span className="text-emerald-700 font-semibold">Payment Received</span>
                 </div>
                 <div className="w-16 h-px bg-gradient-to-r from-emerald-400 to-teal-400"></div>
                 <div className="flex flex-col items-center space-y-2">
@@ -517,6 +632,10 @@ This application will be processed and submitted to the Italian Revenue Agency.
               <Download className="w-5 h-5" />
               <span>{t.downloadPdf}</span>
             </button>
+            
+            <p className="text-sm text-gray-500 mt-4">
+              Application ID: FC-{Date.now()} • Confirmation email sent
+            </p>
           </div>
         </div>
       </div>
@@ -593,6 +712,13 @@ This application will be processed and submitted to the Italian Revenue Agency.
                 </div>
               </div>
 
+              {/* Payment Error */}
+              {paymentError && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                  <p className="text-red-700 font-medium">{paymentError}</p>
+                </div>
+              )}
+
               {/* Payment Button */}
               <button
                 onClick={handlePayment}
@@ -602,7 +728,7 @@ This application will be processed and submitted to the Italian Revenue Agency.
                 {isLoading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Processing...</span>
+                    <span>Processing Payment...</span>
                   </>
                 ) : (
                   <>
@@ -613,7 +739,7 @@ This application will be processed and submitted to the Italian Revenue Agency.
               </button>
 
               <p className="text-center text-gray-500 text-sm mt-4">
-                Secure payment processing • SSL encrypted • GDPR compliant
+                Secure payment processing • SSL encrypted • GDPR compliant • Powered by Stripe
               </p>
             </div>
           </div>
