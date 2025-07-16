@@ -447,19 +447,23 @@ const ItalianTaxFormService = () => {
     const fileName = `codice-fiscale-${formData.lastName || 'application'}-${applicationId}.pdf`;
     doc.save(fileName);
     
-    // Track download
+    // Track download (Google Analytics - safe version)
     trackPDFDownload(fileName);
   };
 
-  // Track PDF downloads for analytics
+  // Track PDF downloads for analytics (fixed version)
   const trackPDFDownload = (fileName) => {
-    // Google Analytics tracking
-    if (typeof gtag !== 'undefined') {
-      gtag('event', 'pdf_download', {
-        event_category: 'engagement',
-        event_label: fileName,
-        application_id: applicationId
-      });
+    try {
+      // Google Analytics tracking - check if gtag exists
+      if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'pdf_download', {
+          event_category: 'engagement',
+          event_label: fileName,
+          application_id: applicationId
+        });
+      }
+    } catch (error) {
+      console.log('Analytics tracking not available');
     }
   };
 
