@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, ChevronRight, Download, Upload, Check, AlertCircle, Globe, HelpCircle, Eye, Edit3, Sparkles, CreditCard } from 'lucide-react';
+import { FileText, Download, Upload, Check, AlertCircle, HelpCircle, CreditCard } from 'lucide-react';
 
 const ItalianFiscalCodeAssistant = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
   const [currentField, setCurrentField] = useState(0);
   const [showWelcome, setShowWelcome] = useState(true);
   const [pdfUrl, setPdfUrl] = useState(null);
-  const [uploadedPdf, setUploadedPdf] = useState(null);
   const [showPayment, setShowPayment] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -283,7 +282,6 @@ const ItalianFiscalCodeAssistant = () => {
     if (file && file.type === 'application/pdf') {
       const url = URL.createObjectURL(file);
       setPdfUrl(url);
-      setUploadedPdf(file);
       setShowWelcome(false);
     }
   };
