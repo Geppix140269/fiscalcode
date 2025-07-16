@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Download, Check, AlertCircle, HelpCircle, ChevronRight, ChevronLeft, Globe, Printer, Upload, FileCheck } from 'lucide-react';
+import { FileText, Download, Check, AlertCircle, HelpCircle, ChevronRight, ChevronLeft, Printer, Upload, FileCheck } from 'lucide-react';
 
 const ItalianFiscalCodeAssistant = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -903,6 +903,63 @@ const ItalianFiscalCodeAssistant = () => {
           margin: 10mm;
         }
       }
+      
+      /* Glass morphism animations */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from { 
+          opacity: 0; 
+          transform: translateY(30px); 
+        }
+        to { 
+          opacity: 1; 
+          transform: translateY(0); 
+        }
+      }
+      
+      .animate-fadeIn {
+        animation: fadeIn 0.8s ease-out;
+      }
+      
+      .animate-slideUp {
+        animation: slideUp 0.6s ease-out;
+      }
+      
+      .animation-delay-100 { animation-delay: 0.1s; }
+      .animation-delay-200 { animation-delay: 0.2s; }
+      .animation-delay-300 { animation-delay: 0.3s; }
+      .animation-delay-400 { animation-delay: 0.4s; }
+      
+      /* Background gradients */
+      .bg-gradient-animated {
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+      }
+      
+      @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      
+      /* Glass effect */
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
     `;
     document.head.appendChild(style);
     return () => document.head.removeChild(style);
@@ -910,28 +967,33 @@ const ItalianFiscalCodeAssistant = () => {
 
   if (showSubmissionConfirmation) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full text-center">
-          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen bg-gradient-to-br from-green-900 via-emerald-900 to-teal-900 flex items-center justify-center p-4 bg-gradient-animated">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="glass-card rounded-3xl shadow-2xl p-8 max-w-2xl w-full text-center relative z-10 animate-slideUp">
+          <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <Check className="w-10 h-10 text-white" />
           </div>
           
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">{t('applicationComplete')}</h1>
-          <p className="text-lg text-gray-600 mb-8">{t('documentsReceived')}</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">{t('applicationComplete')}</h1>
+          <p className="text-lg text-gray-700 mb-8">{t('documentsReceived')}</p>
           
-          <div className="bg-gray-50 rounded-xl p-6 mb-8 text-left">
+          <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 mb-8 text-left border border-white/30">
             <h3 className="font-semibold text-gray-800 mb-4">{t('nextSteps')}:</h3>
             <ol className="space-y-3">
               <li className="flex items-start gap-3">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm">1</span>
+                <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm shadow">1</span>
                 <span className="text-gray-700">{t('step1')}</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm">2</span>
+                <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm shadow">2</span>
                 <span className="text-gray-700">{t('step2')}</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm">3</span>
+                <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0 text-sm shadow">3</span>
                 <span className="text-gray-700">{t('step3')}</span>
               </li>
             </ol>
@@ -940,14 +1002,14 @@ const ItalianFiscalCodeAssistant = () => {
           <div className="flex gap-4">
             <button
               onClick={() => setShowPrintView(true)}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-full hover:shadow-lg transition-all hover:-translate-y-1 flex items-center justify-center gap-2 font-semibold"
             >
               <Download className="w-5 h-5" />
               {t('downloadSignedForm')}
             </button>
             <button
               onClick={() => window.location.reload()}
-              className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors"
+              className="flex-1 bg-white/70 backdrop-blur-sm text-gray-700 py-3 rounded-full hover:bg-white/80 transition-all hover:-translate-y-1 font-semibold"
             >
               {t('startOver')}
             </button>
@@ -1159,11 +1221,11 @@ const ItalianFiscalCodeAssistant = () => {
         </div>
 
         <div className="no-print max-w-4xl mx-auto p-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-            <h3 className="font-semibold text-blue-900 mb-2">{t('printInstructions')}</h3>
+          <div className="glass-card rounded-3xl p-6 mb-6 shadow-lg">
+            <h3 className="font-semibold text-gray-800 mb-2">{t('printInstructions')}</h3>
             <button
               onClick={handlePrint}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-full hover:shadow-lg transition-all hover:-translate-y-1 flex items-center gap-2 font-semibold"
             >
               <Printer className="w-5 h-5" />
               {t('print')}
@@ -1171,7 +1233,7 @@ const ItalianFiscalCodeAssistant = () => {
           </div>
           <button
             onClick={() => setShowPrintView(false)}
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 font-medium"
           >
             ← Back to form
           </button>
@@ -1181,25 +1243,34 @@ const ItalianFiscalCodeAssistant = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="bg-white shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-emerald-900 bg-gradient-animated">
+      {/* Decorative background elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl"></div>
+      </div>
+
+      {/* Header with glass effect */}
+      <div className="glass-effect sticky top-0 z-40 shadow-lg">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <FileText className="w-8 h-8 text-blue-600" />
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-800">{t('title')}</h1>
-                <p className="text-sm text-gray-600">{t('subtitle')}</p>
+                <h1 className="text-xl font-bold text-white">{t('title')}</h1>
+                <p className="text-sm text-white/70">{t('subtitle')}</p>
               </div>
             </div>
             
             <select
               value={currentLanguage}
               onChange={(e) => setCurrentLanguage(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="glass-effect px-4 py-2 rounded-lg text-white focus:ring-2 focus:ring-white/50 border border-white/20"
             >
               {Object.entries(languages).map(([code, lang]) => (
-                <option key={code} value={code}>
+                <option key={code} value={code} className="bg-gray-800">
                   {lang.flag} {lang.name}
                 </option>
               ))}
@@ -1208,84 +1279,86 @@ const ItalianFiscalCodeAssistant = () => {
         </div>
       </div>
 
-      <div className="bg-white border-b">
+      {/* Progress bar with glass effect */}
+      <div className="glass-effect border-b border-white/10">
         <div className="max-w-4xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-white/70">
               {t('step')} {progress.current} {t('of')} {progress.total}
             </span>
-            <span className="text-sm font-medium text-blue-600">
+            <span className="text-sm font-medium text-white">
               {Math.round((progress.current / progress.total) * 100)}% {t('complete')}
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-white/20 rounded-full h-2 overflow-hidden">
             <div
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-purple-400 to-emerald-400 h-2 rounded-full transition-all duration-500 shadow-lg"
               style={{ width: `${(progress.current / progress.total) * 100}%` }}
             />
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6">
-            <h2 className="text-2xl font-bold text-white">{currentStepData.title}</h2>
+      {/* Main content */}
+      <div className="max-w-4xl mx-auto px-6 py-8 relative z-10">
+        <div className="glass-card rounded-3xl shadow-2xl overflow-hidden animate-fadeIn">
+          <div className="bg-gradient-to-r from-purple-600 to-emerald-600 px-8 py-6">
+            <h2 className="text-2xl font-bold text-white animate-slideUp">{currentStepData.title}</h2>
             {isReviewStep && (
-              <p className="text-blue-100 mt-2">{t('reviewInfo')}</p>
+              <p className="text-white/90 mt-2 animate-slideUp animation-delay-100">{t('reviewInfo')}</p>
             )}
           </div>
 
           <div className="p-8">
             {isReviewStep ? (
-              <div className="space-y-6">
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+              <div className="space-y-6 animate-fadeIn">
+                <div className="glass-card rounded-2xl p-6 shadow-lg bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20">
                   <div className="flex items-center gap-3 mb-4">
-                    <Check className="w-6 h-6 text-green-600" />
-                    <h3 className="text-lg font-semibold text-green-800">{t('almostThere')}</h3>
+                    <Check className="w-6 h-6 text-green-400" />
+                    <h3 className="text-lg font-semibold text-white">{t('almostThere')}</h3>
                   </div>
-                  <p className="text-green-700">{t('reviewInfo')}</p>
+                  <p className="text-white/80">{t('reviewInfo')}</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3">Personal Information</h4>
+                  <div className="glass-card rounded-2xl p-6 shadow-lg">
+                    <h4 className="font-semibold text-white mb-3">Personal Information</h4>
                     <dl className="space-y-2">
                       <div>
-                        <dt className="text-sm text-gray-600">Full Name:</dt>
-                        <dd className="font-medium">{formData.nome} {formData.cognome}</dd>
+                        <dt className="text-sm text-white/60">Full Name:</dt>
+                        <dd className="font-medium text-white">{formData.nome} {formData.cognome}</dd>
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-600">Gender:</dt>
-                        <dd className="font-medium">{formData.sesso === 'M' ? 'Male' : 'Female'}</dd>
+                        <dt className="text-sm text-white/60">Gender:</dt>
+                        <dd className="font-medium text-white">{formData.sesso === 'M' ? 'Male' : 'Female'}</dd>
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-600">Date of Birth:</dt>
-                        <dd className="font-medium">{formatDateForPDF(formData.dataNascita)}</dd>
+                        <dt className="text-sm text-white/60">Date of Birth:</dt>
+                        <dd className="font-medium text-white">{formatDateForPDF(formData.dataNascita)}</dd>
                       </div>
                       <div>
-                        <dt className="text-sm text-gray-600">Place of Birth:</dt>
-                        <dd className="font-medium">{formData.comuneNascita} ({formData.provinciaNascita})</dd>
+                        <dt className="text-sm text-white/60">Place of Birth:</dt>
+                        <dd className="font-medium text-white">{formData.comuneNascita} ({formData.provinciaNascita})</dd>
                       </div>
                     </dl>
                   </div>
 
-                  <div>
-                    <h4 className="font-semibold text-gray-700 mb-3">Contact & Address</h4>
+                  <div className="glass-card rounded-2xl p-6 shadow-lg">
+                    <h4 className="font-semibold text-white mb-3">Contact & Address</h4>
                     <dl className="space-y-2">
                       <div>
-                        <dt className="text-sm text-gray-600">Email:</dt>
-                        <dd className="font-medium">{formData.email}</dd>
+                        <dt className="text-sm text-white/60">Email:</dt>
+                        <dd className="font-medium text-white">{formData.email}</dd>
                       </div>
                       {formData.telefono && (
                         <div>
-                          <dt className="text-sm text-gray-600">Phone:</dt>
-                          <dd className="font-medium">{formData.telefono}</dd>
+                          <dt className="text-sm text-white/60">Phone:</dt>
+                          <dd className="font-medium text-white">{formData.telefono}</dd>
                         </div>
                       )}
                       <div>
-                        <dt className="text-sm text-gray-600">Residence:</dt>
-                        <dd className="font-medium">
+                        <dt className="text-sm text-white/60">Residence:</dt>
+                        <dd className="font-medium text-white">
                           {formData.livingInItaly === 'yes' 
                             ? `${formData.tipoVia} ${formData.nomeVia} ${formData.numeroCivico}, ${formData.comuneResidenza} (${formData.provinciaResidenza})`
                             : `${formData.indirizzoEstero}, ${formData.localitaEstera}, ${formData.statoEstero}`
@@ -1296,10 +1369,10 @@ const ItalianFiscalCodeAssistant = () => {
                   </div>
                 </div>
 
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
-                  <h4 className="font-semibold text-gray-700 mb-2">Delegation / Delega</h4>
-                  <p className="text-sm text-gray-600">
-                    This application will be submitted by: <strong>{formData.delegateName}</strong><br/>
+                <div className="glass-card rounded-2xl p-4 shadow-lg bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border-blue-500/20">
+                  <h4 className="font-semibold text-white mb-2">Delegation / Delega</h4>
+                  <p className="text-sm text-white/80">
+                    This application will be submitted by: <strong className="text-white">{formData.delegateName}</strong><br/>
                     Fiscal Code: {formData.delegateFiscalCode}<br/>
                     Born in {formData.delegateBirthPlace} on {formData.delegateBirthDate}
                   </p>
@@ -1308,7 +1381,7 @@ const ItalianFiscalCodeAssistant = () => {
                 <div className="flex gap-4">
                   <button
                     onClick={() => setShowPrintView(true)}
-                    className="flex-1 bg-blue-600 text-white py-4 rounded-xl hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center gap-3"
+                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 font-semibold flex items-center justify-center gap-3 hover:-translate-y-1"
                   >
                     <Printer className="w-5 h-5" />
                     {t('generatePDF')}
@@ -1317,7 +1390,7 @@ const ItalianFiscalCodeAssistant = () => {
                   {formData.signature && formData.passportFile && formData.proofOfResidence && (
                     <button
                       onClick={handleFinalSubmit}
-                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl hover:shadow-lg transition-all duration-300 font-semibold flex items-center justify-center gap-3"
+                      className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-2xl hover:shadow-2xl transition-all duration-300 font-semibold flex items-center justify-center gap-3 hover:-translate-y-1"
                     >
                       <FileCheck className="w-5 h-5" />
                       {t('submitApplication')}
@@ -1326,8 +1399,8 @@ const ItalianFiscalCodeAssistant = () => {
                 </div>
                 
                 {(!formData.signature || !formData.passportFile || !formData.proofOfResidence) && (
-                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                    <p className="text-amber-800 text-sm">
+                  <div className="mt-4 p-4 glass-card rounded-lg bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/20">
+                    <p className="text-amber-200 text-sm">
                       {!formData.signature && !formData.passportFile && !formData.proofOfResidence
                         ? 'Please add your signature, passport copy, and proof of residence to submit'
                         : !formData.signature && !formData.passportFile 
@@ -1347,12 +1420,12 @@ const ItalianFiscalCodeAssistant = () => {
                 )}
               </div>
             ) : (
-              <div className="space-y-6">
-                {fields.map((field) => (
-                  <div key={field.name}>
-                    <label className="block text-gray-700 font-medium mb-2">
+              <div className="space-y-6 animate-fadeIn">
+                {fields.map((field, index) => (
+                  <div key={field.name} className="animate-slideUp" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <label className="block text-white font-medium mb-2">
                       {field.label[currentLanguage] || field.label.en}
-                      {field.required && <span className="text-red-500 ml-1">*</span>}
+                      {field.required && <span className="text-red-400 ml-1">*</span>}
                     </label>
                     
                     {field.type === 'text' || field.type === 'email' || field.type === 'tel' ? (
@@ -1361,8 +1434,8 @@ const ItalianFiscalCodeAssistant = () => {
                         value={formData[field.name] || ''}
                         onChange={(e) => handleInputChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors[field.name] ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-4 py-3 glass-effect rounded-lg text-white placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all ${
+                          errors[field.name] ? 'border-red-400' : 'border-white/20'
                         }`}
                         maxLength={field.maxLength}
                       />
@@ -1371,21 +1444,21 @@ const ItalianFiscalCodeAssistant = () => {
                         type="date"
                         value={formData[field.name] || ''}
                         onChange={(e) => handleInputChange(field.name, e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors[field.name] ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-4 py-3 glass-effect rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all ${
+                          errors[field.name] ? 'border-red-400' : 'border-white/20'
                         }`}
                       />
                     ) : field.type === 'select' ? (
                       <select
                         value={formData[field.name] || ''}
                         onChange={(e) => handleInputChange(field.name, e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                          errors[field.name] ? 'border-red-500' : 'border-gray-300'
+                        className={`w-full px-4 py-3 glass-effect rounded-lg text-white focus:ring-2 focus:ring-white/50 focus:border-white/50 transition-all ${
+                          errors[field.name] ? 'border-red-400' : 'border-white/20'
                         }`}
                       >
-                        <option value="">Select...</option>
+                        <option value="" className="bg-gray-800">Select...</option>
                         {field.options.map((option) => (
-                          <option key={option.value} value={option.value}>
+                          <option key={option.value} value={option.value} className="bg-gray-800">
                             {option.label}
                           </option>
                         ))}
@@ -1393,18 +1466,18 @@ const ItalianFiscalCodeAssistant = () => {
                     ) : field.type === 'radio' ? (
                       <div className="space-y-3">
                         {field.options.map((option) => (
-                          <label key={option.value} className="flex items-center gap-3 cursor-pointer">
+                          <label key={option.value} className="flex items-center gap-3 cursor-pointer glass-effect p-4 rounded-lg hover:bg-white/10 transition-all">
                             <input
                               type="radio"
                               name={field.name}
                               value={option.value}
                               checked={formData[field.name] === option.value}
                               onChange={(e) => handleInputChange(field.name, e.target.value)}
-                              className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+                              className="w-4 h-4 text-purple-600 focus:ring-purple-500"
                             />
-                            <span className="text-gray-700">
+                            <span className="text-white">
                               {option.label}
-                              {option.labelIt && <span className="text-gray-500 ml-2">({option.labelIt})</span>}
+                              {option.labelIt && <span className="text-white/60 ml-2">({option.labelIt})</span>}
                             </span>
                           </label>
                         ))}
@@ -1412,7 +1485,7 @@ const ItalianFiscalCodeAssistant = () => {
                     ) : field.type === 'file' ? (
                       <div>
                         <label className="block">
-                          <div className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg hover:border-gray-400 cursor-pointer">
+                          <div className="flex items-center justify-center w-full h-32 px-4 transition glass-effect border-2 border-dashed rounded-lg hover:border-white/40 cursor-pointer">
                             {field.name === 'signature' && formData.signaturePreview ? (
                               <div className="relative">
                                 <img 
@@ -1421,7 +1494,7 @@ const ItalianFiscalCodeAssistant = () => {
                                   className="max-h-28"
                                   style={{ backgroundColor: 'white' }}
                                 />
-                                <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1 shadow-lg">
                                   <FileCheck className="w-4 h-4 text-white" />
                                 </div>
                               </div>
@@ -1432,7 +1505,7 @@ const ItalianFiscalCodeAssistant = () => {
                                   alt="Passport preview" 
                                   className="max-h-28 rounded"
                                 />
-                                <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1 shadow-lg">
                                   <FileCheck className="w-4 h-4 text-white" />
                                 </div>
                               </div>
@@ -1440,8 +1513,8 @@ const ItalianFiscalCodeAssistant = () => {
                               <div className="relative">
                                 {formData.proofOfResidence?.type === 'application/pdf' ? (
                                   <div className="flex flex-col items-center">
-                                    <FileText className="w-16 h-16 text-gray-500" />
-                                    <span className="text-xs text-gray-600 mt-1">PDF Document</span>
+                                    <FileText className="w-16 h-16 text-white/70" />
+                                    <span className="text-xs text-white/60 mt-1">PDF Document</span>
                                   </div>
                                 ) : (
                                   <img 
@@ -1450,14 +1523,14 @@ const ItalianFiscalCodeAssistant = () => {
                                     className="max-h-28 rounded"
                                   />
                                 )}
-                                <div className="absolute -top-2 -right-2 bg-green-500 rounded-full p-1">
+                                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full p-1 shadow-lg">
                                   <FileCheck className="w-4 h-4 text-white" />
                                 </div>
                               </div>
                             ) : (
                               <div className="flex flex-col items-center">
-                                <Upload className="w-8 h-8 text-gray-400" />
-                                <p className="mt-2 text-sm text-gray-600">
+                                <Upload className="w-8 h-8 text-white/40" />
+                                <p className="mt-2 text-sm text-white/60">
                                   {field.name === 'signature' ? t('uploadSignature') : 
                                    field.name === 'passportFile' ? t('uploadPassport') : 
                                    t('uploadProofOfResidence')}
@@ -1473,19 +1546,19 @@ const ItalianFiscalCodeAssistant = () => {
                           />
                         </label>
                         {field.name === 'signature' && formData.signatureFile && (
-                          <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                          <p className="mt-2 text-sm text-green-400 flex items-center gap-1">
                             <Check className="w-4 h-4" />
                             {formData.signatureFile.name}
                           </p>
                         )}
                         {field.name === 'passportFile' && formData.passportFile && (
-                          <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                          <p className="mt-2 text-sm text-green-400 flex items-center gap-1">
                             <Check className="w-4 h-4" />
                             {formData.passportFile.name}
                           </p>
                         )}
                         {field.name === 'proofOfResidence' && formData.proofOfResidence && (
-                          <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                          <p className="mt-2 text-sm text-green-400 flex items-center gap-1">
                             <Check className="w-4 h-4" />
                             {formData.proofOfResidence.name}
                           </p>
@@ -1495,15 +1568,15 @@ const ItalianFiscalCodeAssistant = () => {
                     
                     {field.help && (
                       <div className="mt-2 flex items-start gap-2">
-                        <HelpCircle className="w-4 h-4 text-gray-400 mt-0.5" />
-                        <p className="text-sm text-gray-600">
+                        <HelpCircle className="w-4 h-4 text-white/40 mt-0.5" />
+                        <p className="text-sm text-white/60">
                           {field.help[currentLanguage] || field.help.en}
                         </p>
                       </div>
                     )}
                     
                     {errors[field.name] && (
-                      <div className="mt-2 flex items-center gap-2 text-red-600">
+                      <div className="mt-2 flex items-center gap-2 text-red-400">
                         <AlertCircle className="w-4 h-4" />
                         <p className="text-sm">{errors[field.name]}</p>
                       </div>
@@ -1517,10 +1590,10 @@ const ItalianFiscalCodeAssistant = () => {
               <button
                 onClick={handlePrevious}
                 disabled={currentStep === 0}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
                   currentStep === 0
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                    ? 'glass-effect text-white/40 cursor-not-allowed'
+                    : 'glass-effect text-white hover:bg-white/20 hover:-translate-y-1'
                 }`}
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -1531,10 +1604,10 @@ const ItalianFiscalCodeAssistant = () => {
                 <button
                   onClick={handleNext}
                   disabled={!isStepValid()}
-                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
                     isStepValid()
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      ? 'bg-gradient-to-r from-purple-600 to-emerald-600 text-white hover:shadow-lg hover:-translate-y-1'
+                      : 'glass-effect text-white/40 cursor-not-allowed'
                   }`}
                 >
                   {t('next')}
@@ -1546,8 +1619,8 @@ const ItalianFiscalCodeAssistant = () => {
         </div>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            <HelpCircle className="inline w-4 h-4 mr-1" />
+          <p className="text-white/60 flex items-center justify-center gap-2">
+            <HelpCircle className="w-4 h-4" />
             {t('helpText')}
           </p>
         </div>
