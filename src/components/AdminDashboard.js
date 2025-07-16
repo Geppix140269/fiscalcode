@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Download, Search, Calendar, Clock, CheckCircle, AlertCircle, Users, TrendingUp, Euro, Filter, RefreshCw, Mail, Globe, Eye } from 'lucide-react';
+import { FileText, Download, Search, Calendar, Clock, Users, TrendingUp, Euro, RefreshCw, Mail, Globe, Eye } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [applications, setApplications] = useState([]);
