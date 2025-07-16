@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronRight, Upload, FileText, Check, AlertCircle, Globe, Download, Edit3, HelpCircle, CreditCard, Send, ArrowRight, FileCheck, Languages, Sparkles } from 'lucide-react';
+import { ChevronRight, Upload, FileText, Check, AlertCircle, Download, Edit3, HelpCircle, CreditCard, ArrowRight, FileCheck, Sparkles, Globe } from 'lucide-react';
 
 const ItalianFiscalCodeAssistant = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -638,7 +638,7 @@ const ItalianFiscalCodeAssistant = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-white font-medium hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
               <div className="flex items-center gap-3">
-                <Languages className="w-5 h-5 text-emerald-300" />
+                <Globe className="w-5 h-5 text-emerald-300" />
                 <span>✓ 8 Languages</span>
               </div>
             </div>
