@@ -494,7 +494,6 @@ const ItalianFiscalCodeAssistant = () => {
                 <a
                   href="/AA4-8-fiscal-code-form.pdf"
                   download="AA4-8-fiscal-code-form.pdf"
-                  onClick={() => setPdfUrl('/AA4-8-fiscal-code-form.pdf')}
                   className="inline-flex items-center gap-2 bg-white/90 text-purple-700 px-6 py-3 rounded-full font-bold hover:bg-white transition-all"
                 >
                   <Download className="w-5 h-5" />
@@ -522,6 +521,9 @@ const ItalianFiscalCodeAssistant = () => {
             </div>
             
             <div className="mt-8 pt-8 border-t border-white/20">
+              <p className="text-white/80 mb-4 text-sm">
+                After downloading or uploading the PDF, you can fill it out with our guidance
+              </p>
               <button
                 onClick={() => {
                   setPdfUrl('/AA4-8-fiscal-code-form.pdf');
@@ -576,11 +578,41 @@ const ItalianFiscalCodeAssistant = () => {
         {/* PDF Viewer */}
         <div className="flex-1 bg-gray-200 relative overflow-hidden">
           {pdfUrl ? (
-            <iframe
-              src={pdfUrl}
-              className="w-full h-full"
-              title="Fiscal Code Form"
-            />
+            <div className="w-full h-full">
+              {/* Try iframe first */}
+              <iframe
+                src={`${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`}
+                className="w-full h-full border-0"
+                title="Fiscal Code Form"
+              />
+              
+              {/* Fallback message */}
+              <div className="absolute inset-0 flex items-center justify-center bg-white/95 pointer-events-none opacity-0 hover:opacity-100 transition-opacity">
+                <div className="text-center p-8">
+                  <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600 mb-4">
+                    Having trouble viewing the PDF?
+                  </p>
+                  <div className="space-y-3 pointer-events-auto">
+                    <a
+                      href={pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      Open PDF in New Tab
+                    </a>
+                    <a
+                      href={pdfUrl}
+                      download="AA4-8-fiscal-code-form.pdf"
+                      className="block bg-gray-600 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition-colors"
+                    >
+                      Download PDF
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className="flex items-center justify-center h-full">
               <div className="text-center text-gray-500">
