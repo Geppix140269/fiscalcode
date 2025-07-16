@@ -432,7 +432,7 @@ const ItalianFiscalCodeAssistant = () => {
         submission_time: new Date().toLocaleTimeString(),
         language: currentLanguage.toUpperCase(),
         payment_amount: '€75.00',
-        to_email: 'info@fiscalcode.service'
+        to_email: 'codicefiscale@marietrulli.com'
       };
 
       if (window.emailjs) {
