@@ -10,7 +10,8 @@
     "@stripe/stripe-js": "^2.4.0",
     "@stripe/react-stripe-js": "^2.4.0",
     "jspdf": "^2.5.1",
-    "html2canvas": "^1.4.1"
+    "html2canvas": "^1.4.1",
+    "@emailjs/browser": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
