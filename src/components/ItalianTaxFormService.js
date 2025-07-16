@@ -2,13 +2,9 @@
 // REPLACE your existing ItalianTaxFormService.js with this entire content
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Download, Check, AlertCircle, Globe, CreditCard, FileText, User, MapPin, Calendar, Hash, Shield, Award, Clock, Star, ArrowRight, Sparkles, Zap, Brain } from 'lucide-react';
-import { loadStripe } from '@stripe/stripe-js';
+import { ChevronLeft, ChevronRight, Download, Check, AlertCircle, Globe, CreditCard, FileText, User, MapPin, Shield, Award, Clock, Star, ArrowRight, Zap } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import emailjs from '@emailjs/browser';
-
-// Initialize Stripe
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_stripe_key_here');
 
 const ItalianTaxFormService = () => {
   const [currentLanguage, setCurrentLanguage] = useState('en');
@@ -278,19 +274,15 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  // Enhanced Payment Processing with Stripe
   const handlePayment = async () => {
     setIsLoading(true);
     setPaymentError(null);
 
-    // Generate unique application ID
     const newApplicationId = `FC-${Date.now()}`;
     setApplicationId(newApplicationId);
 
     try {
-      // For now, simulate payment (you can add real Stripe later)
       setTimeout(async () => {
-        // Send confirmation emails
         await sendConfirmationEmail(newApplicationId);
         await sendAgencyNotification(newApplicationId);
         
@@ -305,7 +297,6 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  // Send confirmation email to user
   const sendConfirmationEmail = async (appId) => {
     try {
       const templateParams = {
@@ -336,7 +327,6 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  // Send notification to agency
   const sendAgencyNotification = async (appId) => {
     try {
       const templateParams = {
@@ -370,7 +360,6 @@ const ItalianTaxFormService = () => {
     }
   };
 
-  // Get service type name
   const getServiceTypeName = (typeId) => {
     const serviceTypes = {
       '1': 'New Fiscal Code Application',
@@ -382,15 +371,12 @@ const ItalianTaxFormService = () => {
     return serviceTypes[typeId] || 'Unknown Service';
   };
 
-  // Enhanced PDF Generation with Official Italian Form Format
   const generatePDF = () => {
     const doc = new jsPDF();
     
-    // Set up the PDF with official Italian formatting
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     
-    // Header
     doc.text('DOMANDA DI ATTRIBUZIONE CODICE FISCALE', 20, 20);
     doc.text('COMUNICAZIONE VARIAZIONE DATI', 20, 30);
     doc.text('E RICHIESTA TESSERINO/DUPLICATO TESSERA SANITARIA', 20, 40);
@@ -399,10 +385,8 @@ const ItalianTaxFormService = () => {
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
     
-    // Application ID
     doc.text(`Application ID: ${applicationId}`, 20, 65);
     
-    // Personal Information Section
     doc.text('QUADRO B - Dati anagrafici', 20, 80);
     doc.text(`Cognome: ${formData.lastName || ''}`, 20, 95);
     doc.text(`Nome: ${formData.firstName || ''}`, 20, 105);
@@ -412,21 +396,18 @@ const ItalianTaxFormService = () => {
     doc.text(`Provincia: ${formData.birthProvince || ''}`, 120, 125);
     doc.text(`Email: ${formData.email || ''}`, 20, 135);
     
-    // Residence Section
     doc.text('QUADRO C - Residenza anagrafica/domicilio fiscale', 20, 155);
     doc.text(`Indirizzo: ${formData.address || ''} ${formData.civicNumber || ''}`, 20, 170);
     doc.text(`Comune: ${formData.city || ''}`, 20, 180);
     doc.text(`CAP: ${formData.postalCode || ''}`, 120, 180);
     doc.text(`Provincia: ${formData.province || ''}`, 20, 190);
     
-    // Foreign Residence (if applicable)
     if (formData.foreignCountry) {
       doc.text('QUADRO D - Residenza estera', 20, 210);
       doc.text(`Stato estero: ${formData.foreignCountry || ''}`, 20, 225);
       doc.text(`Indirizzo: ${formData.foreignAddress || ''}`, 20, 235);
     }
     
-    // Request Type
     const requestTypes = {
       '1': 'Attribuzione Codice Fiscale',
       '2': 'Variazione Dati',
@@ -438,57 +419,32 @@ const ItalianTaxFormService = () => {
     doc.text('QUADRO A - Tipo richiesta', 20, 255);
     doc.text(`Servizio richiesto: ${requestTypes[formData.requestType] || ''}`, 20, 270);
     
-    // Footer
     doc.setFontSize(10);
     doc.text('Applicazione processata tramite servizio professionale', 20, 285);
     doc.text(`Data di generazione: ${new Date().toLocaleDateString('it-IT')}`, 20, 295);
     
-    // Save the PDF
     const fileName = `codice-fiscale-${formData.lastName || 'application'}-${applicationId}.pdf`;
     doc.save(fileName);
-    
-    // Track download (Google Analytics - safe version)
-    trackPDFDownload(fileName);
-  };
-
-  // Track PDF downloads for analytics (fixed version)
-  const trackPDFDownload = (fileName) => {
-    try {
-      // Google Analytics tracking - check if gtag exists
-      if (typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', 'pdf_download', {
-          event_category: 'engagement',
-          event_label: fileName,
-          application_id: applicationId
-        });
-      }
-    } catch (error) {
-      console.log('Analytics tracking not available');
-    }
   };
 
   const currentFormStep = formSteps[currentStep];
   const completedSteps = formSteps.slice(0, currentStep + 1).filter((_, index) => isStepValid(index)).length;
   const progress = (completedSteps / formSteps.length) * 100;
 
-  // Landing/Hero Section with InvestiScope-inspired design
   if (currentStep === 0 && !showPayment && !isCompleted && Object.keys(formData).length === 0) {
     return (
       <div className={`min-h-screen relative overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`}>
-        {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-800 via-indigo-700 to-teal-700"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-purple-900/50 via-transparent to-teal-900/50"></div>
           <div className="absolute inset-0 bg-black/40"></div>
         </div>
 
-        {/* Floating elements background */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
         </div>
 
-        {/* Glassmorphic Header */}
         <div className="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
           <div className="max-w-7xl mx-auto px-6 py-4">
             <div className="flex justify-between items-center">
@@ -517,15 +473,12 @@ const ItalianTaxFormService = () => {
           </div>
         </div>
 
-        {/* Hero Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
-          {/* Glass Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 text-white px-6 py-3 rounded-full text-sm font-semibold mb-8 shadow-xl">
             <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
             PROFESSIONAL ITALIAN BUREAUCRACY SERVICE
           </div>
           
-          {/* Main Title */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-white mb-8 leading-tight">
             {t.heroTitle?.split(' ').slice(0, 3).join(' ')}<br />
             <span className="font-bold bg-gradient-to-r from-emerald-300 to-teal-300 bg-clip-text text-transparent">
@@ -533,7 +486,6 @@ const ItalianTaxFormService = () => {
             </span>
           </h1>
           
-          {/* Glass Card for Subtitle */}
           <div className="max-w-4xl mx-auto mb-10">
             <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 shadow-2xl">
               <p className="text-xl md:text-2xl text-white font-medium mb-3">
@@ -545,7 +497,6 @@ const ItalianTaxFormService = () => {
             </div>
           </div>
           
-          {/* Glass Benefits Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-6 py-4 rounded-2xl text-white font-medium hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
               <div className="flex items-center gap-3">
@@ -567,7 +518,6 @@ const ItalianTaxFormService = () => {
             </div>
           </div>
           
-          {/* Glass CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-5 justify-center mb-16">
             <button
               onClick={() => handleInputChange('started', true)}
@@ -581,7 +531,6 @@ const ItalianTaxFormService = () => {
             </button>
           </div>
 
-          {/* Benefits Section */}
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
             <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition-all duration-300 shadow-xl">
               <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
@@ -608,7 +557,6 @@ const ItalianTaxFormService = () => {
             </div>
           </div>
           
-          {/* Glass Contact Card */}
           <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6 inline-block shadow-xl">
             <p className="text-white font-medium text-lg mb-3">Questions? Let's talk.</p>
             <div className="flex flex-wrap justify-center items-center gap-6 text-white">
@@ -627,7 +575,6 @@ const ItalianTaxFormService = () => {
   if (isCompleted) {
     return (
       <div className={`min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`}>
-        {/* Floating background elements */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-200/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-teal-200/30 rounded-full blur-3xl"></div>
@@ -687,7 +634,6 @@ const ItalianTaxFormService = () => {
   if (showPayment) {
     return (
       <div className={`min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 relative overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`}>
-        {/* Floating background elements */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-200/30 rounded-full blur-3xl"></div>
@@ -695,7 +641,6 @@ const ItalianTaxFormService = () => {
 
         <div className="relative z-10 max-w-4xl mx-auto px-6 py-12">
           <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/50">
-            {/* Header */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-center">
               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CreditCard className="w-8 h-8 text-white" />
@@ -705,7 +650,6 @@ const ItalianTaxFormService = () => {
             </div>
 
             <div className="p-8">
-              {/* Application Summary */}
               <div className="bg-gradient-to-br from-gray-50 to-purple-50 rounded-2xl p-6 mb-8 border border-gray-200">
                 <h3 className="font-bold text-xl mb-6 text-gray-800">Application Summary</h3>
                 <div className="grid md:grid-cols-2 gap-6">
@@ -744,7 +688,6 @@ const ItalianTaxFormService = () => {
                 </div>
               </div>
 
-              {/* Pricing */}
               <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-6 text-white mb-8">
                 <div className="flex justify-between items-center">
                   <div>
@@ -758,14 +701,12 @@ const ItalianTaxFormService = () => {
                 </div>
               </div>
 
-              {/* Payment Error */}
               {paymentError && (
                 <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
                   <p className="text-red-700 font-medium">{paymentError}</p>
                 </div>
               )}
 
-              {/* Payment Button */}
               <button
                 onClick={handlePayment}
                 disabled={isLoading}
@@ -796,13 +737,11 @@ const ItalianTaxFormService = () => {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-purple-50 via-white to-indigo-50 relative overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`}>
-      {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 right-0 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Header */}
       <div className="relative z-10 bg-white/80 backdrop-blur-lg shadow-lg border-b border-white/20 sticky top-0">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -833,10 +772,8 @@ const ItalianTaxFormService = () => {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-          {/* Progress Sidebar */}
           <div className="xl:col-span-1">
             <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl p-6 sticky top-24 border border-white/20">
-              {/* Progress Header */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-3">
                   <span className="text-sm font-medium text-gray-600">Progress</span>
@@ -850,7 +787,6 @@ const ItalianTaxFormService = () => {
                 </div>
               </div>
 
-              {/* Steps */}
               <div className="space-y-3">
                 {formSteps.map((step, index) => {
                   const StepIcon = step.icon;
@@ -904,10 +840,8 @@ const ItalianTaxFormService = () => {
             </div>
           </div>
 
-          {/* Main Form */}
           <div className="xl:col-span-3">
             <div className="bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 overflow-hidden">
-              {/* Form Header */}
               <div className={`bg-gradient-to-r ${currentFormStep.gradient} p-8`}>
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
@@ -924,7 +858,6 @@ const ItalianTaxFormService = () => {
                 </div>
               </div>
 
-              {/* Form Content */}
               <div className="p-8">
                 <div className="space-y-8">
                   {currentFormStep.fields.map((field, index) => (
@@ -936,7 +869,6 @@ const ItalianTaxFormService = () => {
                         </span>
                       </label>
                       
-                      {/* Instruction Card */}
                       <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 mb-4">
                         <div className="flex items-start space-x-3">
                           <AlertCircle className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
@@ -944,7 +876,6 @@ const ItalianTaxFormService = () => {
                         </div>
                       </div>
 
-                      {/* Form Input */}
                       {field.type === 'radio' ? (
                         <div className="grid gap-3">
                           {field.options.map((option) => (
@@ -987,7 +918,6 @@ const ItalianTaxFormService = () => {
                   ))}
                 </div>
 
-                {/* Navigation */}
                 <div className={`flex items-center justify-between mt-12 pt-8 border-t border-gray-200 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   {currentStep > 0 ? (
                     <button
