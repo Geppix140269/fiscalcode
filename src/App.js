@@ -1,10 +1,10 @@
 import React from 'react';
-import ItalianTaxFormService from './components/ItalianTaxFormService';
+import ItalianFiscalCodeAssistant from './components/ItalianFiscalCodeAssistant';
 
 function App() {
   return (
     <div className="App">
-      <ItalianTaxFormService />
+      <ItalianFiscalCodeAssistant />
     </div>
   );
 }
